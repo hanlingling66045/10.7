@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/index.js"></script>
+    
+    <script src="./js/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+      <p>我写完头了</p>
+      <div class="box">
+           <header>汽车网</header>
+          <main class="main">
+              <!-- 空盒子 -->
+             <div>
+             <!-- 内容 -->
+          <div class="center">
+             
+            <ol class="center1">
+                <!-- <p>A</p>
+               
+                <li>现代</li>
+                <li>马自达</li>
+                <li>名爵</li> -->
+             </ol>
+            </div>
+            </div>
+         </div>
+        </main>
+      </div>
+      <!-- 固定定位 -->
+      <div class="right">
+         <ul class="right1">
+            
+         </ul>
+      </div>
+      <script src="./js/betterScroll.js"></script>
+      <script>
+        //实例  
+        //  var wrap = new Bscroll(".box",{
+        //      click:true
+        //  });
+        
+         $.ajax({
+             url:"data/data.json",
+             //dataType:"json",
+             success:function(data){
+                 shou(data);
+             }
+         })
+        
+         function shou(data){
+            var str = ''; 
+            var arr = [];
+            var obj = {};
+            data.data.forEach(function(file){
+                var zimu = file.Spelling;
+                var mu = zimu.slice(0,1);
+                //去重 ABCDEF
+                if(arr.indexOf(mu)===-1){
+                    arr.push(mu);
+                   
+                }
+            })
+            console.log(arr);
+            //去重完的每一项 ABCDEF
+            arr.forEach(function(file){
+                var arrtwo = [];
+                data.data.forEach(function(files){
+                    if(files.Spelling.slice(0,1) === file){
+                        arrtwo.push(files);
+                    }
+                });
+                obj[file] = arrtwo;
+            })
+            console.log(obj);
+           
+            
+            for(var key in obj){
+                //追加字母
+                var str = "";
+                str +=`
+                  <p>${key}</p>
+                  `;
+                $(".center1").append(str); 
+                //追加内容
+                var str1 = "";
+                obj[key].forEach(function(file){
+                  str1 += `
+                          <li><img src="${file.CoverPhoto}" alt="">${file.Name}</li>
+                        `;
+                 }) 
+                 $(".center1").append(str1);  
+            }
+            //渲染右边字母
+            var str2 = "";
+            for(var key in obj){
+              str2 += `<p>${key}</p>`;
+            }
+            $(".right1").append(str2);
+
+           
+        }
+           var wrap = new BScroll(".main",{
+                  click:true,
+                  scrollX:true,
+                  scrollbar:true,
+            }) 
+            
+
+           //绑定点击事件
+            $(".right1").on("click","p",function(){
+                var index = $(this).index();
+                console.log(index);
+                wrap.scrollToElement($('.center1>p').eq(index)[0]); 
+                //console.log($(".center1>p").eq(index)[0]);
+                console.log($('.right1 p').eq(index)[0]);
+            })
+      </script>
+</body>
+</html>
